@@ -8,7 +8,6 @@ import { ApiResponse } from '../utils/ApiResponse.js'
 const registerUser = asyncHandler(async (req,res)=>{
     
     const {username,email,fullname,password} = req.body
-    // console.log('email',email,password);
 
     if (
         [fullname,email,password,username].some((field)=>{field?.trim()===""})
@@ -21,17 +20,19 @@ const registerUser = asyncHandler(async (req,res)=>{
     if(existedUser){
         throw new ApiError(409,"Username is not available")
     }
-
+    // console.log(req);
 
     const avatarLocalPath = req.files?.avatar[0]?.path;
+    // console.log(avatarLocalPath)
     const coverImageLocalPath = req.files?.coverimage[0]?.path;
+    // console.log(coverImageLocalPath)
 
     if(!avatarLocalPath){
-        throw new ApiError(400,"Avatar is required")
+        throw new ApiError(400,"AvatarLocal Path is required")
     }
+
     const avatar = await uploadOnCloudinary(avatarLocalPath);
     const coverimage = await uploadOnCloudinary(coverImageLocalPath);
-
     
     if(!avatar){
         throw new ApiError(400,"Avatar is required")
@@ -51,8 +52,8 @@ const registerUser = asyncHandler(async (req,res)=>{
         throw new ApiError(500,"Something broke while registering user")
     }
     
-    return res.statusCode(200).json(
-        new ApiResponse(200,userCreated,"User Successfully Registerd")
+    return res.status(200).json(
+        new ApiResponse(200,userCreated,"User registerd succesfully")
     )
 })
 
